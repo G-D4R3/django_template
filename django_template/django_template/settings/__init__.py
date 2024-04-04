@@ -1,1 +1,1 @@
-from django_template.settings.base import *
+from django_template.settings.local import *
