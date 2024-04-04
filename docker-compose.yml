@@ -1,0 +1,14 @@
+version: "3"
+services:
+  uwsgi:
+    expose:
+      - "8000"
+    build:
+      dockerfile: Dockerfile
+      context: .
+  nginx:
+    ports:
+      - 80:80
+    build: ./nginx
+    depends_on :
+      - uwsgi
