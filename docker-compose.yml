@@ -7,11 +7,6 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: django_template
-      POSTGRES_HOST: postgres
   uwsgi:
     expose:
       - "8000"
@@ -20,6 +15,11 @@ services:
       context: .
     depends_on:
       - postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: django_template
+      POSTGRES_HOST: postgres
   nginx:
     ports:
       - 80:80
