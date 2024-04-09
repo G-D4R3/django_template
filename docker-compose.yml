@@ -1,12 +1,16 @@
 version: "3"
 services:
-  postgres:
+  db:
     image: postgres:15
     restart: always
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - ./postgres_data:/var/lib/postgresql/data/
     ports:
-      - "5432:5432"
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=django_template
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
   uwsgi:
     expose:
       - "8000"
@@ -14,12 +18,20 @@ services:
       dockerfile: Dockerfile
       context: .
     depends_on:
-      - postgres
+      - db
+    command:
+      - bash
+      - -c
+      - |
+        ./wait-for-it.sh db:5432 -s -t 100
+        source var/www/django/venv/bin/activate
+        python3 var/www/django/code/manage.py migrate --noinput
+        uwsgi --ini /var/www/django/ini/uwsgi.ini
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: django_template
-      POSTGRES_HOST: postgres
+      - POSTGRES_NAME=django_template
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - ENV_SETTINGS_MODE=prod
   nginx:
     ports:
       - 80:80

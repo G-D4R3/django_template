@@ -31,4 +31,5 @@ RUN /var/www/django/venv/bin/pip3 install -r /var/www/django/requirements.txt
 ADD ./uwsgi/uwsgi.ini /var/www/django/ini/uwsgi.ini
 ADD ./django_template /var/www/django/code
 
-CMD ["/bin/bash", "-c", "source /var/www/django/venv/bin/activate && uwsgi --ini /var/www/django/ini/uwsgi.ini"]
+COPY wait-for-it.sh wait-for-it.sh
+RUN chmod +x wait-for-it.sh
